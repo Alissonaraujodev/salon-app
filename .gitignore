@@ -1,0 +1,9 @@
+# Dependências (muito pesadas, não vão pro GitHub)
+node_modules/
+
+# Variáveis de ambiente (senhas nunca vão pro GitHub)
+.env
+
+# Arquivos do sistema operacional
+.DS_Store
+Thumbs.db
