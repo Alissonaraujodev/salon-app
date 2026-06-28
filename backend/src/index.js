@@ -1,9 +1,20 @@
 import express from 'express'
 import cors from 'cors'
 import dotenv from 'dotenv'
+import pool from './config/database.js'   // <- adicione essa linha
 
 // Carrega as variáveis do arquivo .env para process.env
 dotenv.config()
+
+// Testa a conexão com o banco ao iniciar o servidor
+pool.getConnection()
+  .then(conn => {
+    console.log('Banco de dados conectado com sucesso!')
+    conn.release() // devolve a conexão pro pool depois de testar
+  })
+  .catch(err => {
+    console.error('Erro ao conectar no banco:', err.message)
+  })
 
 const app = express()
 const PORT = process.env.PORT || 3001
