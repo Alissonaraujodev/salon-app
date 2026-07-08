@@ -32,8 +32,20 @@ async function criarServico(dados) {
   return buscarServicoPorId(result.insertId)
 }
 
+async function atualizarServico(id, dados) {
+  const { nome, descricao, duracao_minutos, preco, ativo } = dados
+
+  await pool.query(
+    'UPDATE servicos SET nome = ?, descricao = ?, duracao_minutos = ?, preco = ?, ativo = ? WHERE id = ?',
+    [nome, descricao, duracao_minutos, preco, ativo, id]
+  )
+
+  return buscarServicoPorId(id)
+}
+
 export {
     listarServicos,
     buscarServicoPorId,
-    criarServico
+    criarServico,
+    atualizarServico
 }

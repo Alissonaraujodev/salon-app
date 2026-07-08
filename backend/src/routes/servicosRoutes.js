@@ -12,4 +12,6 @@ router.get('/:id', servicosController.buscarServico)
 // POST /api/servicos → cria um novo
 router.post('/', servicosController.criarServico)
 
+router.put('/:id', servicosController.atualizarServico)
+
 export default router

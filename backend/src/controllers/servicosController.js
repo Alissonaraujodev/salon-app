@@ -48,8 +48,31 @@ async function criarServico(req, res) {
   }
 }
 
+async function atualizarServico(req, res) {
+  try {
+    const { id } = req.params
+    const { nome, descricao, duracao_minutos, preco, ativo } = req.body
+
+    if (!nome || !descricao || !duracao_minutos || !preco || ativo === undefined) {
+      return res.status(400).json({ erro: 'Nome, descrição, duração em minutos, preço e status ativo ou não ativo são obrigatórios' })
+    }
+
+    const servicoExistente = await servicosService.buscarServicoPorId(id)
+    if (!servicoExistente) {
+      return res.status(404).json({ erro: 'Serviço não encontrado' })
+    }
+
+    const servicoAtualizado = await servicosService.atualizarServico(id, { nome, descricao, duracao_minutos, preco, ativo })
+    res.json(servicoAtualizado)
+  } catch (error) {
+    console.error('Erro ao atualizar serviço:', error)
+    res.status(500).json({ erro: 'Erro interno do servidor' })
+  }
+}
+
 export {
     listarServicos,
     buscarServico,
-    criarServico
+    criarServico, 
+    atualizarServico
 }
