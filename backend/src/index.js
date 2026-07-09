@@ -4,6 +4,7 @@ import dotenv from 'dotenv'
 import pool from './config/database.js'   // <- adicione essa linha
 import servicosRoutes from './routes/servicosRoutes.js'  // <- adicione
 import clientesRoutes from './routes/clientesRoutes.js'
+import profissionaisRoutes from './routes/profissionaisRoutes.js'
 
 // Carrega as variáveis do arquivo .env para process.env
 dotenv.config()
@@ -30,6 +31,7 @@ app.use(express.json())
 // O prefixo '/api/servicos' aqui + a rota '/' no router = GET /api/servicos
 app.use('/api/servicos', servicosRoutes)  // <- adicione
 app.use('/api/clientes', clientesRoutes)
+app.use('/api/profissionais', profissionaisRoutes)
 
 // Rota de teste para confirmar que o servidor está funcionando
 app.get('/', (req, res) => {
