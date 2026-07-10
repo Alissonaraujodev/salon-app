@@ -28,6 +28,22 @@ async function buscarServico(req, res) {
   }
 }
 
+async function buscarServicoPorNome(req, res) {
+  try {
+    const { nome } = req.params
+    const servico = await servicosService.buscarServicoPorNome(nome)
+
+    if (servico.length === 0) {
+      return res.status(404).json({ erro: 'Servico não encontrado' })
+    }
+
+    res.json(servico)
+  } catch (error) {
+    console.error('Erro ao buscar servico:', error)
+    res.status(500).json({ erro: 'Erro interno do servidor' })
+  }
+}
+
 async function criarServico(req, res) {
   try {
     // req.body contém o JSON enviado no corpo da requisição
@@ -72,6 +88,7 @@ async function atualizarServico(req, res) {
 
 export {
     listarServicos,
+    buscarServicoPorNome,
     buscarServico,
     criarServico, 
     atualizarServico

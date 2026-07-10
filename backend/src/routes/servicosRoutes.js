@@ -9,6 +9,8 @@ router.get('/', servicosController.listarServicos)
 // GET /api/servicos/3 → busca o serviço de id 3
 router.get('/:id', servicosController.buscarServico)
 
+router.get('/buscar/:nome', servicosController.buscarServicoPorNome)
+
 // POST /api/servicos → cria um novo
 router.post('/', servicosController.criarServico)
 

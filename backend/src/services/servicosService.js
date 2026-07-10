@@ -19,6 +19,18 @@ async function buscarServicoPorId(id) {
   return rows[0]
 }
 
+async function buscarServicoPorNome(nome) {
+  const [rows] = await pool.query(
+    `SELECT * 
+    FROM servicos 
+    WHERE nome LIKE ?
+    ORDER BY LOCATE(?, LOWER(nome)), nome`,
+    [`%${nome}%`, nome.toLowerCase()]
+  )
+
+  return rows
+}
+
 // Cria um novo serviço
 async function criarServico(dados) {
   const { nome, descricao, duracao_minutos, preco } = dados
@@ -46,6 +58,7 @@ async function atualizarServico(id, dados) {
 export {
     listarServicos,
     buscarServicoPorId,
+    buscarServicoPorNome,
     criarServico,
     atualizarServico
 }
