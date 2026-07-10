@@ -17,8 +17,11 @@ async function buscarProfissionalPorId(id) {
 
 async function buscarProfissionalPorNome(nome) {
   const [rows] = await pool.query(
-    'SELECT * FROM profissionais WHERE nome LIKE ?',
-    [`%${nome}%`]
+    `SELECT * 
+    FROM profissionais 
+    WHERE nome LIKE ?
+    ORDER BY LOCATE(?, LOWER(nome)), nome`,
+    [`%${nome}%`, nome.toLowerCase()]
   )
 
   return rows
