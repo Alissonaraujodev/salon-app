@@ -4,6 +4,7 @@ import cors from 'cors'
 import servicosRoutes from './routes/servicosRoutes.js'
 import clientesRoutes from './routes/clientesRoutes.js'
 import profissionaisRoutes from './routes/profissionaisRoutes.js'
+import agendamentosRoutes from './routes/agendamentosRoutes.js'
 
 const app = express()
 
@@ -15,6 +16,7 @@ app.use(express.json())
 app.use('/api/servicos', servicosRoutes)
 app.use('/api/clientes', clientesRoutes)
 app.use('/api/profissionais', profissionaisRoutes)
+app.use('/api/agendamentos', agendamentosRoutes)
 
 // Rota de teste
 app.get('/', (req, res) => {
