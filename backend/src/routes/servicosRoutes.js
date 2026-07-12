@@ -3,17 +3,10 @@ import * as servicosController from '../controllers/servicosController.js'
 
 const router = Router()
 
-// GET /api/servicos → lista todos
 router.get('/', servicosController.listarServicos)
-
-// GET /api/servicos/3 → busca o serviço de id 3
-router.get('/:id', servicosController.buscarServico)
-
 router.get('/buscar/:nome', servicosController.buscarServicoPorNome)
-
-// POST /api/servicos → cria um novo
+router.get('/:id', servicosController.buscarServico)
 router.post('/', servicosController.criarServico)
-
 router.put('/:id', servicosController.atualizarServico)
 
 export default router
