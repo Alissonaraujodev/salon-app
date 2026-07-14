@@ -28,23 +28,52 @@ async function buscarCliente(req, res) {
 
 async function criarCliente(req, res) {
   try {
-    // req.body contém o JSON enviado no corpo da requisição
-    const { nome,telefone, email } = req.body
+    const nome = req.body.nome?.trim()
+    const telefone = req.body.telefone?.trim()
+    const email = req.body.email?.trim().toLowerCase()
+    const senha = req.body.senha
 
-    // Validação básica — campos obrigatórios
-    if (!nome || !telefone || !email) {
-      // 400 = Bad Request (o cliente mandou dados inválidos)
-      return res.status(400).json({ erro: 'Nome, telefone e email são obrigatórios' })
+    if (!nome || !telefone || !email || !senha) {
+      return res.status(400).json({ erro: 'Nome, telefone, email e senha são obrigatórios' })
     }
 
-    // Verifica se já existe um cliente com esse email antes de tentar inserir
+    const telefoneLimpo = telefone.replace(/\D/g, '')
+
+    if (telefoneLimpo.length < 10 || telefoneLimpo.length > 11) {
+      return res.status(400).json({
+        erro: 'Telefone inválido.'
+      })  
+    }
+
+    const regexEmail = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
+
+    if (!regexEmail.test(email)) {
+      return res.status(400).json({
+        erro: 'Email inválido.'
+      })
+    }
+
+    if (senha.length < 8) {
+      return res.status(400).json({
+        erro: 'A senha deve ter no mínimo 8 caracteres.'
+      })
+    }
+
+    const regexSenha =
+      /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&.#_-]).+$/
+
+    if (!regexSenha.test(senha)) {
+      return res.status(400).json({
+        erro: 'A senha deve conter pelo menos uma letra maiúscula, uma letra minúscula, um número e um caractere especial.'
+      })
+    }
+
     const clienteExistente = await clientesService.buscarClientePorEmail(email)
     if (clienteExistente) {
       return res.status(409).json({ erro: 'Já existe um cliente com esse email' })
     }
 
-    const novoCliente = await clientesService.criarCliente({ nome, telefone, email })
-    // 201 = Created (diferente do 200, indica que algo foi criado)
+    const novoCliente = await clientesService.criarCliente({ nome, telefone, email, senha })
     res.status(201).json(novoCliente)
   } catch (error) {
     console.error('Erro ao criar cliente:', error)

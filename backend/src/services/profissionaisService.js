@@ -1,23 +1,63 @@
 import pool from '../config/database.js'
+import bcrypt from 'bcryptjs'
 
 async function listarProfissionais() {
   const [rows] = await pool.query(
-    'SELECT * FROM profissionais WHERE ativo = TRUE ORDER BY nome'
+    `SELECT
+      id,
+      nome,
+      telefone,
+      email,
+      cargo,
+      especialidade,
+      ativo,
+      criado_em,
+      atualizado_em
+    FROM profissionais 
+    WHERE ativo = TRUE ORDER BY nome`
   )
   return rows
 }
 
 async function buscarProfissionalPorId(id) {
   const [rows] = await pool.query(
-    'SELECT * FROM profissionais WHERE id = ?',
+    `SELECT 
+      id,
+      nome,
+      telefone,
+      email,
+      cargo, 
+      ativo,
+      especialidade,
+      atualizado_em,
+      criado_em
+    FROM profissionais 
+    WHERE id = ?`,
     [id]
+  )
+  return rows[0]
+}
+
+async function buscarProfissionalPorEmailComSenha(email) {
+  const [rows] = await pool.query(
+    'SELECT * FROM profissionais WHERE email = ?',
+    [email]
   )
   return rows[0]
 }
 
 async function buscarProfissionalPorNome(nome) {
   const [rows] = await pool.query(
-    `SELECT * 
+    `SELECT 
+      id,
+      nome,
+      telefone,
+      email,
+      cargo,
+      especialidade,
+      ativo,
+      criado_em,
+      atualizado_em 
     FROM profissionais 
     WHERE nome LIKE ?
     ORDER BY LOCATE(?, LOWER(nome)), nome`,
@@ -36,11 +76,13 @@ async function buscarProfissionalPorEmail(email) {
 }
 
 async function criarProfissional(dados) {
-  const { nome, telefone, email, cargo, especialidade } = dados
+  const { nome, telefone, email, senha, cargo, especialidade } = dados
+
+  const senhaHash = await bcrypt.hash(senha, 10)
 
   const [result] = await pool.query(
-    'INSERT INTO profissionais (nome, telefone, email, cargo, especialidade ) VALUES (?, ?, ?, ?, ?)',
-    [nome, telefone, email, cargo, especialidade ]
+    'INSERT INTO profissionais (nome, telefone, email, senha, cargo, especialidade ) VALUES (?, ?, ?, ?, ?, ?)',
+    [nome, telefone, email, senhaHash, cargo, especialidade ]
   )
 
   return buscarProfissionalPorId(result.insertId)
@@ -60,6 +102,7 @@ async function atualizarProfissional(id, dados) {
 export {
   listarProfissionais,
   buscarProfissionalPorId,
+  buscarProfissionalPorEmailComSenha,
   buscarProfissionalPorNome,
   buscarProfissionalPorEmail,
   criarProfissional,

@@ -44,21 +44,54 @@ async function buscarProfissionalPorNome(req, res) {
 
 async function criarProfissional(req, res) {
   try {
-    const { nome,telefone, email, cargo, especialidade } = req.body
+    const nome = req.body.nome?.trim()
+    const telefone = req.body.telefone?.trim()
+    const email = req.body.email?.trim().toLowerCase()
+    const senha = req.body.senha
+    const cargo = req.body.cargo?.trim()
+    const especialidade = req.body.especialidade?.trim()
 
-    // Validação básica — campos obrigatórios
-    if (!nome || !telefone || !email || !cargo || !especialidade) {
-      return res.status(400).json({ erro: 'Nome, telefone, email, cargo e especialidade são obrigatórios' })
+    if (!nome || !telefone || !email || !senha || !cargo ) {
+      return res.status(400).json({ erro: 'Nome, telefone, email, senha e cargo são obrigatórios' })
     }
 
-    // Verifica se já existe um Profissional com esse email antes de tentar inserir
+    const telefoneLimpo = telefone.replace(/\D/g, '')
+
+    if (telefoneLimpo.length < 10 || telefoneLimpo.length > 11) {
+      return res.status(400).json({
+        erro: 'Telefone inválido.'
+      })  
+    }
+
+    const regexEmail = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
+
+    if (!regexEmail.test(email)) {
+      return res.status(400).json({
+        erro: 'Email inválido.'
+      })
+    }
+
+    if (senha.length < 8) {
+      return res.status(400).json({
+        erro: 'A senha deve ter no mínimo 8 caracteres.'
+      })
+    }
+
+    const regexSenha =
+      /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&.#_-]).+$/
+
+    if (!regexSenha.test(senha)) {
+      return res.status(400).json({
+        erro: 'A senha deve conter pelo menos uma letra maiúscula, uma letra minúscula, um número e um caractere especial.'
+      })
+    }
+
     const profissionalExistente = await profissionaisService.buscarProfissionalPorEmail(email)
     if (profissionalExistente) {
       return res.status(409).json({ erro: 'Já existe um profissional com esse email' })
     }
 
-    const novoProfissional = await profissionaisService.criarProfissional({ nome, telefone, email, cargo, especialidade })
-    // 201 = Created (diferente do 200, indica que algo foi criado)
+    const novoProfissional = await profissionaisService.criarProfissional({ nome, telefone, email, senha, cargo, especialidade })
     res.status(201).json(novoProfissional)
   } catch (error) {
     console.error('Erro ao criar profissional:', error)
