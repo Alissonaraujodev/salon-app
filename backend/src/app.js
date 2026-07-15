@@ -1,6 +1,7 @@
 import express from 'express'
 import cors from 'cors'
 
+import authRoutes from './routes/authRoutes.js'
 import servicosRoutes from './routes/servicosRoutes.js'
 import clientesRoutes from './routes/clientesRoutes.js'
 import profissionaisRoutes from './routes/profissionaisRoutes.js'
@@ -11,6 +12,8 @@ const app = express()
 // Middlewares
 app.use(cors())
 app.use(express.json())
+
+app.use('/api/auth', authRoutes)
 
 // Rotas
 app.use('/api/servicos', servicosRoutes)
