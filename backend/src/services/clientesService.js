@@ -42,7 +42,13 @@ async function buscarClientePorEmailComSenha(email) {
 
 async function buscarClientePorEmail(email) {
   const [rows] = await pool.query(
-    'SELECT * FROM clientes WHERE email = ?',
+    `SELECT 
+      id,
+      nome,
+      telefone,
+      email    
+    FROM clientes 
+    WHERE email = ?`,
     [email]
   )
   return rows[0]
