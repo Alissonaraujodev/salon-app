@@ -4,8 +4,8 @@ import * as agendamentosController from '../controllers/agendamentosController.j
 const router = Router()
 
 router.get('/', agendamentosController.listarAgendamentos)
-router.get('/:id', agendamentosController.buscarAgendamentoPorId)
 router.get('/cliente/:clienteId', agendamentosController.listarAgendamentosPorCliente)
+router.get('/:id', agendamentosController.buscarAgendamentoPorId)
 router.post('/', agendamentosController.criarAgendamento)
 router.patch('/:id/status', agendamentosController.atualizarStatus)
 
