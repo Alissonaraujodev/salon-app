@@ -1,5 +1,4 @@
 import bcrypt from 'bcryptjs'
-import { buscarClientePorEmailComSenha } from './clientesService.js'
 import { buscarProfissionalPorEmailComSenha } from './profissionaisService.js'
 
 async function autenticarUsuario(email, senha) {
@@ -15,20 +14,6 @@ async function autenticarUsuario(email, senha) {
       email: profissional.email,
       cargo: profissional.cargo,
       tipo: 'profissional'
-    }
-  }
-
-  // Se não achou em profissionais, verifica em clientes
-  const cliente = await buscarClientePorEmailComSenha(email)
-  if (cliente) {
-    const senhaCorreta = await bcrypt.compare(senha, cliente.senha)
-    if (!senhaCorreta) return null
-
-    return {
-      id: cliente.id,
-      nome: cliente.nome,
-      email: cliente.email,
-      tipo: 'cliente'
     }
   }
 

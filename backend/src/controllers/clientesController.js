@@ -30,11 +30,11 @@ async function criarCliente(req, res) {
   try {
     const nome = req.body.nome?.trim()
     const telefone = req.body.telefone?.trim()
-    const email = req.body.email?.trim().toLowerCase()
-    const senha = req.body.senha
+    const data_nascimento = req.body.data_nascimento || null
+    const observacoes = req.body.observacoes?.trim() || null
 
-    if (!nome || !telefone || !email || !senha) {
-      return res.status(400).json({ erro: 'Nome, telefone, email e senha são obrigatórios' })
+    if (!nome || !telefone) {
+      return res.status(400).json({ erro: 'Nome, telefone são obrigatórios' })
     }
 
     const telefoneLimpo = telefone.replace(/\D/g, '')
@@ -45,35 +45,12 @@ async function criarCliente(req, res) {
       })  
     }
 
-    const regexEmail = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
-
-    if (!regexEmail.test(email)) {
-      return res.status(400).json({
-        erro: 'Email inválido.'
-      })
-    }
-
-    if (senha.length < 8) {
-      return res.status(400).json({
-        erro: 'A senha deve ter no mínimo 8 caracteres.'
-      })
-    }
-
-    const regexSenha =
-      /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&.#_-]).+$/
-
-    if (!regexSenha.test(senha)) {
-      return res.status(400).json({
-        erro: 'A senha deve conter pelo menos uma letra maiúscula, uma letra minúscula, um número e um caractere especial.'
-      })
-    }
-
-    const clienteExistente = await clientesService.buscarClientePorEmail(email)
+    const clienteExistente = await clientesService.buscarClientePorTelefone(telefone)
     if (clienteExistente) {
-      return res.status(409).json({ erro: 'Já existe um cliente com esse email' })
+      return res.status(409).json({ erro: 'Já existe um cliente com esse telefone' })
     }
 
-    const novoCliente = await clientesService.criarCliente({ nome, telefone, email, senha })
+    const novoCliente = await clientesService.criarCliente({ nome, telefone, data_nascimento, observacoes })
     res.status(201).json(novoCliente)
   } catch (error) {
     console.error('Erro ao criar cliente:', error)
@@ -84,10 +61,10 @@ async function criarCliente(req, res) {
 async function atualizarCliente(req, res) {
   try {
     const { id } = req.params
-    const { nome, telefone, email } = req.body
+    const { nome, telefone, data_nascimento, observacoes } = req.body
 
-    if (!nome || !telefone || !email) {
-      return res.status(400).json({ erro: 'Nome, telefone e email são obrigatórios' })
+    if (!nome || !telefone) {
+      return res.status(400).json({ erro: 'Nome e telefone  são obrigatórios' })
     }
 
     // Verifica se o cliente existe antes de tentar atualizar
@@ -95,8 +72,13 @@ async function atualizarCliente(req, res) {
     if (!clienteExistente) {
       return res.status(404).json({ erro: 'Cliente não encontrado' })
     }
+   
+    const outroClienteComTelefone = await clientesService.buscarClientePorTelefone(telefone)
+      if (outroClienteComTelefone && outroClienteComTelefone.id !== Number(id)) {
+        return res.status(409).json({ erro: 'Já existe outro cliente com esse telefone' })
+    }
 
-    const clienteAtualizado = await clientesService.atualizarCliente(id, { nome, telefone, email })
+    const clienteAtualizado = await clientesService.atualizarCliente(id, { nome, telefone, data_nascimento, observacoes })
     res.json(clienteAtualizado)
   } catch (error) {
     console.error('Erro ao atualizar cliente:', error)
