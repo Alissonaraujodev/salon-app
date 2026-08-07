@@ -1,4 +1,5 @@
 import { useAuth } from '../../hooks/useAuth.js'
+import { Link } from 'react-router-dom'
 import Layout from '../../components/Layout.jsx'
 
 export default function Dashboard() {
@@ -60,8 +61,8 @@ function CardMenu({ emoji, titulo, descricao, href, cor }) {
   }
 
   return (
-    <a
-      href={href}
+    <Link
+      to={href}
       className={`
         block bg-white rounded-2xl border-2 p-6
         transition-all duration-200 cursor-pointer
@@ -72,6 +73,6 @@ function CardMenu({ emoji, titulo, descricao, href, cor }) {
       <div className="text-3xl mb-3">{emoji}</div>
       <h2 className="font-semibold text-gray-800 mb-1">{titulo}</h2>
       <p className="text-sm text-gray-400">{descricao}</p>
-    </a>
+    </Link>
   )
 }

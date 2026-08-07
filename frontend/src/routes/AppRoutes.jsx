@@ -2,6 +2,7 @@ import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom'
 import { useAuth } from '../hooks/useAuth.js'
 import Login from '../pages/Login.jsx'
 import Dashboard from '../pages/profissional/Dashboard.jsx'
+import Clientes from '../pages/profissional/Clientes.jsx'
 
 
 // Componente que protege rotas — se não estiver logado, redireciona para login
@@ -29,7 +30,7 @@ export default function AppRoutes() {
         } />
 
         <Route path="/clientes" element={
-          <RotaProtegida><div>Clientes (em breve)</div></RotaProtegida>
+          <RotaProtegida><Clientes /></RotaProtegida>
         } />
 
         <Route path="/servicos" element={
