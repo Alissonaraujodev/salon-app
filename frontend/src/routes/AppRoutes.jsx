@@ -3,6 +3,7 @@ import { useAuth } from '../hooks/useAuth.js'
 import Login from '../pages/Login.jsx'
 import Dashboard from '../pages/profissional/Dashboard.jsx'
 import Clientes from '../pages/profissional/Clientes.jsx'
+import Servicos from '../pages/profissional/Servicos.jsx'
 
 
 // Componente que protege rotas — se não estiver logado, redireciona para login
@@ -34,7 +35,7 @@ export default function AppRoutes() {
         } />
 
         <Route path="/servicos" element={
-          <RotaProtegida><div>Serviços (em breve)</div></RotaProtegida>
+          <RotaProtegida><Servicos /></RotaProtegida>
         } />
 
         <Route path="/profissionais" element={
