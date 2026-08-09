@@ -10,6 +10,16 @@ async function listarProfissionais(req, res) {
   }
 }
 
+async function listarProfissionaisAtivos(req, res) {
+  try {
+    const profissionais = await profissionaisService.listarProfissionaisAtivos()
+    res.json(profissionais)
+  } catch (error) {
+    console.error('Erro ao listar profissionais:', error)
+    res.status(500).json({ erro: 'Erro interno do servidor' })
+  }
+}
+
 async function buscarProfissional(req, res) {
   try {
     const { id } = req.params
@@ -124,6 +134,7 @@ async function atualizarProfissional(req, res) {
 
 export{
   listarProfissionais,
+  listarProfissionaisAtivos,
   buscarProfissional,
   buscarProfissionalPorNome,
   criarProfissional,

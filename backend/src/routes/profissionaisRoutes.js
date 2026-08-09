@@ -5,6 +5,7 @@ import { autenticar, autorizar } from '../middlewares/authMiddleware.js'
 const router = Router()
 
 router.get('/', profissionaisController.listarProfissionais)
+router.get('/',profissionaisController.listarProfissionaisAtivos)
 router.get('/buscar/:nome', profissionaisController.buscarProfissionalPorNome)
 router.get('/:id', profissionaisController.buscarProfissional)
 router.post('/', autenticar, autorizar('administrador'), profissionaisController.criarProfissional)

@@ -14,7 +14,26 @@ async function listarProfissionais() {
       criado_em,
       atualizado_em
     FROM profissionais 
-    WHERE ativo = TRUE ORDER BY nome`
+    ORDER BY nome`
+  )
+  return rows
+}
+
+async function listarProfissionaisAtivos() {
+  const [rows] = await pool.query(
+    `SELECT
+      id,
+      nome,
+      telefone,
+      email,
+      cargo,
+      especialidade,
+      ativo,
+      criado_em,
+      atualizado_em
+    FROM profissionais 
+    WHERE ativo = TRUE 
+    ORDER BY nome`
   )
   return rows
 }
@@ -115,6 +134,7 @@ async function atualizarProfissional(id, dados) {
 
 export {
   listarProfissionais,
+  listarProfissionaisAtivos,
   buscarProfissionalPorId,
   buscarProfissionalPorEmailComSenha,
   buscarProfissionalPorNome,
