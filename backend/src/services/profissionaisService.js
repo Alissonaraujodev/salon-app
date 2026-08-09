@@ -89,12 +89,26 @@ async function criarProfissional(dados) {
 }
 
 async function atualizarProfissional(id, dados) {
-  const { nome, telefone, email, cargo, especialidade, ativo } = dados
+  const { nome, telefone, email, cargo, especialidade, ativo, senha } = dados
 
-  await pool.query(
-    'UPDATE profissionais SET nome = ?, telefone = ?, email = ?, cargo = ?, especialidade = ?, ativo = ? WHERE id = ?',
-    [nome, telefone, email, cargo, especialidade, ativo, id]
-  )
+  if (senha) {
+    const senhaHash = await bcrypt.hash(senha, 10)
+    await pool.query(
+      `UPDATE profissionais 
+       SET nome = ?, telefone = ?, email = ?, cargo = ?, 
+           especialidade = ?, ativo = ?, senha = ?
+       WHERE id = ?`,
+      [nome, telefone, email, cargo, especialidade, ativo, senhaHash, id]
+    )
+  } else {
+    await pool.query(
+      `UPDATE profissionais 
+       SET nome = ?, telefone = ?, email = ?, cargo = ?, 
+           especialidade = ?, ativo = ?
+       WHERE id = ?`,
+      [nome, telefone, email, cargo, especialidade, ativo, id]
+    )
+  }
 
   return buscarProfissionalPorId(id)
 }

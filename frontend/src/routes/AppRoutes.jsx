@@ -4,6 +4,7 @@ import Login from '../pages/Login.jsx'
 import Dashboard from '../pages/profissional/Dashboard.jsx'
 import Clientes from '../pages/profissional/Clientes.jsx'
 import Servicos from '../pages/profissional/Servicos.jsx'
+import Profissionais from '../pages/profissional/Profissionais.jsx'
 
 
 // Componente que protege rotas — se não estiver logado, redireciona para login
@@ -39,7 +40,7 @@ export default function AppRoutes() {
         } />
 
         <Route path="/profissionais" element={
-          <RotaProtegida><div>Profissionais (em breve)</div></RotaProtegida>
+          <RotaProtegida><Profissionais /></RotaProtegida>
         } />
 
         <Route path="*" element={<Navigate to="/dashboard" replace />} />
