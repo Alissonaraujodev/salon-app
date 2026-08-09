@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react'
+import { Eye, EyeOff } from 'lucide-react'
 import Layout from '../../components/Layout.jsx'
 import Modal from '../../components/Modal.jsx'
 import Input from '../../components/Input.jsx'
@@ -38,6 +39,9 @@ export default function Profissionais() {
   const [modalAberto, setModalAberto] = useState(false)
   const [profissionalEditando, setProfissionalEditando] = useState(null)
   const [form, setForm] = useState(FORM_VAZIO)
+  const [confirmarSenha, setConfirmarSenha] = useState('')
+  const [mostrarSenha, setMostrarSenha] = useState(false)
+  const [mostrarConfirmarSenha, setMostrarConfirmarSenha] = useState(false)
   const [erroForm, setErroForm] = useState([])
   const [salvando, setSalvando] = useState(false)
 
@@ -65,6 +69,9 @@ export default function Profissionais() {
   function abrirModalNovo() {
     setProfissionalEditando(null)
     setForm(FORM_VAZIO)
+    setConfirmarSenha('')
+    setMostrarSenha(false)
+    setMostrarConfirmarSenha(false)
     setErroForm('')
     setModalAberto(true)
   }
@@ -80,6 +87,9 @@ export default function Profissionais() {
       especialidade: profissional.especialidade || '',
       ativo: profissional.ativo === 1 || profissional.ativo === true
     })
+    setConfirmarSenha('')
+    setMostrarSenha(false)
+    setMostrarConfirmarSenha(false)
     setErroForm('')
     setModalAberto(true)
   }
@@ -88,6 +98,9 @@ export default function Profissionais() {
     setModalAberto(false)
     setProfissionalEditando(null)
     setForm(FORM_VAZIO)
+    setConfirmarSenha('')
+    setMostrarSenha(false)
+    setMostrarConfirmarSenha(false)
     setErroForm('')
   }
 
@@ -101,6 +114,13 @@ export default function Profissionais() {
 
   async function handleSalvar() {
     setErroForm('')
+
+    // Confirmação de senha só se aplica ao cadastro de um novo profissional
+    if (!profissionalEditando && form.senha !== confirmarSenha) {
+      setErroForm('As senhas não coincidem')
+      return
+    }
+
     setSalvando(true)
 
     try {
@@ -260,14 +280,57 @@ export default function Profissionais() {
             />
           </div>
 
-          <Input
-            label={profissionalEditando ? 'Nova senha (deixe vazio para manter)' : 'Senha'}
-            name="senha"
-            type="password"
-            placeholder="••••••••"
-            value={form.senha}
-            onChange={handleChange}
-          />
+          {/* Campo de senha com botão de visibilidade (olho) */}
+          <div className="flex flex-col gap-1">
+            <label className="text-sm font-medium text-gray-700">
+              {profissionalEditando ? 'Nova senha (deixe vazio para manter)' : 'Senha'}
+            </label>
+            <div className="relative">
+              <input
+                name="senha"
+                type={mostrarSenha ? 'text' : 'password'}
+                placeholder="••••••••"
+                value={form.senha}
+                onChange={handleChange}
+                className="w-full px-4 py-2 pr-10 border border-gray-300 rounded-lg text-sm
+                           focus:outline-none focus:ring-2 focus:ring-pink-400"
+              />
+              <button
+                type="button"
+                onClick={() => setMostrarSenha(v => !v)}
+                tabIndex={-1}
+                className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600"
+              >
+                {mostrarSenha ? <EyeOff size={18} /> : <Eye size={18} />}
+              </button>
+            </div>
+          </div>
+
+          {/* Confirmação de senha — só faz sentido no cadastro de um novo profissional */}
+          {!profissionalEditando && (
+            <div className="flex flex-col gap-1">
+              <label className="text-sm font-medium text-gray-700">Confirmar senha</label>
+              <div className="relative">
+                <input
+                  name="confirmarSenha"
+                  type={mostrarConfirmarSenha ? 'text' : 'password'}
+                  placeholder="••••••••"
+                  value={confirmarSenha}
+                  onChange={(e) => setConfirmarSenha(e.target.value)}
+                  className="w-full px-4 py-2 pr-10 border border-gray-300 rounded-lg text-sm
+                             focus:outline-none focus:ring-2 focus:ring-pink-400"
+                />
+                <button
+                  type="button"
+                  onClick={() => setMostrarConfirmarSenha(v => !v)}
+                  tabIndex={-1}
+                  className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600"
+                >
+                  {mostrarConfirmarSenha ? <EyeOff size={18} /> : <Eye size={18} />}
+                </button>
+              </div>
+            </div>
+          )}
 
           <div className="grid grid-cols-2 gap-3">
             {/* Select de cargo — mais seguro que input livre */}
