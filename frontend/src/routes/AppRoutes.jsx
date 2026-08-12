@@ -5,6 +5,7 @@ import Dashboard from '../pages/profissional/Dashboard.jsx'
 import Clientes from '../pages/profissional/Clientes.jsx'
 import Servicos from '../pages/profissional/Servicos.jsx'
 import Profissionais from '../pages/profissional/Profissionais.jsx'
+import Agendamentos from '../pages/profissional/Agendamentos.jsx'
 
 
 // Componente que protege rotas — se não estiver logado, redireciona para login
@@ -28,7 +29,7 @@ export default function AppRoutes() {
         } />
 
         <Route path="/agendamentos" element={
-          <RotaProtegida><div>Agendamentos (em breve)</div></RotaProtegida>
+          <RotaProtegida><Agendamentos /></RotaProtegida>
         } />
 
         <Route path="/clientes" element={
